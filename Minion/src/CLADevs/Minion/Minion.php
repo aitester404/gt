@@ -5,6 +5,7 @@ namespace CLADevs\Minion;
 use CLADevs\Minion\tasks\MinionEntity;
 use pocketmine\player\Player;
 use pocketmine\world\Position;
+use pocketmine\world\World;
 
 class Minion {
 
@@ -26,10 +27,15 @@ class Minion {
     private function spawnEntity(): void {
         $skin = $this->owner->getSkin();
 
-        // Position -> Location dönüştür
-        $location = $this->position instanceof \pocketmine\world\Position
-            ? $this->position->asLocation()
-            : $this->position;
+        // Position -> Location manuel dönüşüm
+        $world = $this->position->getWorld();
+        $x = $this->position->getX();
+        $y = $this->position->getY();
+        $z = $this->position->getZ();
+        $yaw = $this->owner->getLocation()->getYaw();
+        $pitch = $this->owner->getLocation()->getPitch();
+
+        $location = new \pocketmine\entity\location\Location($x, $y, $z, $world, $yaw, $pitch);
 
         $this->entity = new MinionEntity($location, $skin);
         $this->entity->spawnToAll();
@@ -59,3 +65,4 @@ class Minion {
         return $this->entity;
     }
 }
+
