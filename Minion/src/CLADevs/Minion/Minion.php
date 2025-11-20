@@ -10,10 +10,9 @@ class Minion {
     private Player $owner;
     private int $level;
     private int $resource = 0;
-
     private ?MinionEntity $entity = null;
 
-    public function __construct(Player $owner, int $level = 1) {
+    public function __construct(Player $owner, int $level = 1){
         $this->owner = $owner;
         $this->level = $level;
 
@@ -25,7 +24,7 @@ class Minion {
         $direction = $this->owner->getDirectionVector();
         $spawnPos = $eyePos->add($direction); // İmlecin baktığı yere spawn
 
-        $skin = $this->owner->getSkin(); // PM5 player skin
+        $skin = $this->owner->getSkin(); // Oyuncunun skin'i
         $this->entity = new MinionEntity($spawnPos, $skin);
         $this->entity->setRotation($this->owner->getLocation()->getYaw(), $this->owner->getLocation()->getPitch());
         $this->entity->spawnToAll();
