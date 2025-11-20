@@ -1,52 +1,48 @@
 <?php
 
-namespace MinyonPlugin\entity;
+namespace MinyonPlugin;
 
-use pocketmine\entity\Human;
+use pocketmine\plugin\PluginBase;
+use pocketmine\entity\EntityDataHelper;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\item\VanillaItems;
+use pocketmine\entity\EntityFactory;
+use pocketmine\world\World;
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
-use pocketmine\math\Vector3;
-use MinyonPlugin\task\MinionMineTask;
+use MinyonPlugin\entity\Minion;
 
-class Minion extends Human {
+class Main extends PluginBase {
 
-    protected array $storage = [];
+    public function onEnable(): void {
 
-    public static function createBaseNBT($pos): CompoundTag {
-        return CompoundTag::create(); // ✔ PM5 için doğru yöntem
-    }
-
-    protected function initEntity(CompoundTag $nbt): void {
-        parent::initEntity($nbt);
-
-        $this->setScale(0.66);
-
-        $this->getInventory()->setItemInHand(VanillaItems::DIAMOND_PICKAXE());
-
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(
-            new MinionMineTask($this),
-            40
+        EntityFactory::getInstance()->register(
+            Minion::class,
+            function(World $world, CompoundTag $nbt): Minion {
+                return new Minion(
+                    EntityDataHelper::parseLocation($nbt, $world),
+                    $nbt
+                );
+            },
+            ["Minion"]
         );
+
+        $this->getLogger()->info("MinyonPlugin aktif!");
     }
 
-    public function addItem(string $id, int $count = 1): void {
-        if(!isset($this->storage[$id])) $this->storage[$id] = 0;
-        $this->storage[$id] += $count;
-    }
+    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
 
-    public function onInteract(Player $player, Vector3 $clickPos): bool {
+        if(!$sender instanceof Player) return false;
+        if($command->getName() !== "minyon") return false;
 
-        $player->sendMessage("§b--- Minyon Envanteri ---");
+        $pos = $sender->getLocation();
 
-        if(empty($this->storage)){
-            $player->sendMessage("§7Envanter boş.");
-            return true;
-        }
+        // 🔥 PM5 doğru spawn
+        $minion = new Minion($pos, CompoundTag::create());
+        $minion->spawnToAll();
 
-        foreach($this->storage as $id => $count){
-            $player->sendMessage("§a$id §fx§e$count");
-        }
+        $sender->sendMessage("§aMinyon oluşturuldu!");
+
         return true;
     }
 }
