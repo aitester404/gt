@@ -9,7 +9,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\VanillaItems;
-use CLADevs\Minion\tasks\MinionTask;
+use CLADevs\Minion\tasks\MinionTaskScheduler;
 
 class Main extends PluginBase implements Listener {
 
@@ -21,7 +21,7 @@ class Main extends PluginBase implements Listener {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
 
         $tickDelay = (int)$this->getConfig()->get("minion.tick-delay", 20);
-        $this->getScheduler()->scheduleRepeatingTask(new MinionTask($this->manager), $tickDelay);
+        $this->getScheduler()->scheduleRepeatingTask(new MinionTaskScheduler($this->manager), $tickDelay);
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
@@ -75,7 +75,7 @@ class Main extends PluginBase implements Listener {
             if($this->manager->getMinion($player) === null){
                 $this->manager->addMinion($player, $player->getPosition());
                 $player->sendMessage("Minion spawn edildi!");
-                $item->pop(); // Yumurtayı azalt
+                $item->pop();
                 $event->cancel();
             } else {
                 $player->sendMessage("Zaten bir minionun var!");
