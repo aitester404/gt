@@ -8,23 +8,13 @@ class MinionManager {
 
     /** @var Minion[] */
     private array $minions = [];
-    private \pocketmine\plugin\PluginBase $plugin;
 
-    public function __construct(\pocketmine\plugin\PluginBase $plugin) {
-        $this->plugin = $plugin;
+    public function addMinion(Player $player, int $level = 1): void {
+        $minion = new Minion($player, $level);
+        $this->minions[spl_object_id($minion)] = $minion;
     }
 
-    public function addMinion(Player $player, $position): void {
-        $this->minions[$player->getName()] = new Minion($player, $position);
-    }
-
-    public function getMinion(Player $player): ?Minion {
-        return $this->minions[$player->getName()] ?? null;
-    }
-
-    public function tickMinions(): void {
-        foreach($this->minions as $minion) {
-            $minion->tick();
-        }
+    public function getMinions(): array {
+        return $this->minions;
     }
 }
