@@ -32,4 +32,3 @@ class MinionEntity extends Human {
         return parent::onUpdate($currentTick);
     }
 }
-
