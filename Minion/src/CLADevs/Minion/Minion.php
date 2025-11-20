@@ -24,8 +24,14 @@ class Minion {
     }
 
     private function spawnEntity(): void {
-        $skin = $this->owner->getSkin(); // Oyuncunun skin'i
-        $this->entity = new MinionEntity($this->position, $skin);
+        $skin = $this->owner->getSkin();
+
+        // Position -> Location dönüştür
+        $location = $this->position instanceof \pocketmine\world\Position
+            ? $this->position->asLocation()
+            : $this->position;
+
+        $this->entity = new MinionEntity($location, $skin);
         $this->entity->spawnToAll();
     }
 
@@ -53,4 +59,3 @@ class Minion {
         return $this->entity;
     }
 }
-
