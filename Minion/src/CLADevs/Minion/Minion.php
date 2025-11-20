@@ -2,6 +2,7 @@
 
 namespace CLADevs\Minion;
 
+use CLADevs\Minion\entity\MinionEntity;
 use pocketmine\player\Player;
 use pocketmine\world\Position;
 
@@ -12,14 +13,23 @@ class Minion {
     private int $level;
     private int $resource = 0;
 
+    private ?MinionEntity $entity = null;
+
     public function __construct(Player $owner, Position $position, int $level = 1) {
         $this->owner = $owner;
         $this->position = $position;
         $this->level = $level;
+
+        $this->spawnEntity();
+    }
+
+    private function spawnEntity(): void {
+        $skin = $this->owner->getSkin(); // Oyuncunun skin'i
+        $this->entity = new MinionEntity($this->position, $skin);
+        $this->entity->spawnToAll();
     }
 
     public function tick(): void {
-        // Örnek: her tickte level kadar resource üret
         $this->resource += $this->level;
     }
 
@@ -37,5 +47,9 @@ class Minion {
 
     public function getOwner(): Player {
         return $this->owner;
+    }
+
+    public function getEntity(): ?MinionEntity {
+        return $this->entity;
     }
 }
