@@ -2,10 +2,16 @@ name: MinyonPlugin
 main: MinyonPlugin\Main
 version: 1.0.0
 api: 5.0.0
-author: Emir
+author: eeT
 description: Minyon mining plugin
 
 commands:
   minyon:
-    description: Minyon oluştur
+    description: Minyon oluşturur
     usage: "/minyon"
+    permission: minyon.use
+
+permissions:
+  minyon.use:
+    description: "Minyon oluşturma izni"
+    default: true
