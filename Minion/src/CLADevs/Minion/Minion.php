@@ -4,30 +4,29 @@ namespace CLADevs\Minion;
 
 use CLADevs\Minion\tasks\MinionEntity;
 use pocketmine\player\Player;
-use pocketmine\world\Position;
 
 class Minion {
 
     private Player $owner;
-    private Position $position;
     private int $level;
     private int $resource = 0;
 
     private ?MinionEntity $entity = null;
 
-    public function __construct(Player $owner, Position $position, int $level = 1) {
+    public function __construct(Player $owner, int $level = 1) {
         $this->owner = $owner;
-        $this->position = $position;
         $this->level = $level;
 
         $this->spawnEntity();
     }
 
     private function spawnEntity(): void {
-        $skin = $this->owner->getSkin(); // PM5 player skin
-        $pos = $this->position;
+        $eyePos = $this->owner->getEyePos();
+        $direction = $this->owner->getDirectionVector();
+        $spawnPos = $eyePos->add($direction); // İmlecin baktığı yere spawn
 
-        $this->entity = new MinionEntity($pos, $skin);
+        $skin = $this->owner->getSkin(); // PM5 player skin
+        $this->entity = new MinionEntity($spawnPos, $skin);
         $this->entity->setRotation($this->owner->getLocation()->getYaw(), $this->owner->getLocation()->getPitch());
         $this->entity->spawnToAll();
     }
