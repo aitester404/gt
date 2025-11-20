@@ -24,9 +24,7 @@ class Minion {
     }
 
     private function spawnEntity(): void {
-        $skin = $this->owner->getSkin();
-
-        // PM5'te Location yok, direkt Position kullan
+        $skin = $this->owner->getSkin(); // PM5 player skin
         $pos = $this->position;
 
         $this->entity = new MinionEntity($pos, $skin);
