@@ -2,7 +2,7 @@
 
 namespace CLADevs\Minion;
 
-use CLADevs\Minion\entity\MinionEntity;
+use CLADevs\Minion\tasks\MinionEntity;
 use pocketmine\player\Player;
 use pocketmine\world\Position;
 
@@ -53,3 +53,4 @@ class Minion {
         return $this->entity;
     }
 }
+
