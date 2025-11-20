@@ -1,0 +1,11 @@
+name: MinyonPlugin
+main: MinyonPlugin\Main
+version: 1.0.0
+api: 5.0.0
+author: Emir
+description: Minyon mining plugin
+
+commands:
+  minyon:
+    description: Minyon oluştur
+    usage: "/minyon"
