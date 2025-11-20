@@ -3,20 +3,18 @@
 namespace CLADevs\Minion;
 
 use pocketmine\player\Player;
-use pocketmine\plugin\PluginBase;
-use pocketmine\world\Position;
 
 class MinionManager {
 
     /** @var Minion[] */
     private array $minions = [];
-    private PluginBase $plugin;
+    private \pocketmine\plugin\PluginBase $plugin;
 
-    public function __construct(PluginBase $plugin) {
+    public function __construct(\pocketmine\plugin\PluginBase $plugin) {
         $this->plugin = $plugin;
     }
 
-    public function addMinion(Player $player, Position $position): void {
+    public function addMinion(Player $player, $position): void {
         $this->minions[$player->getName()] = new Minion($player, $position);
     }
 
