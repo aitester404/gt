@@ -7,6 +7,8 @@ use pocketmine\event\Listener;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
+use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\item\VanillaItems;
 use CLADevs\Minion\tasks\MinionTask;
 
 class Main extends PluginBase implements Listener {
@@ -15,12 +17,9 @@ class Main extends PluginBase implements Listener {
 
     protected function onEnable(): void {
         $this->saveDefaultConfig();
-
         $this->manager = new MinionManager($this);
-
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
 
-        // Minion tick task
         $tickDelay = (int)$this->getConfig()->get("minion.tick-delay", 20);
         $this->getScheduler()->scheduleRepeatingTask(new MinionTask($this->manager), $tickDelay);
     }
@@ -30,12 +29,15 @@ class Main extends PluginBase implements Listener {
 
         if(strtolower($command->getName()) === "minion") {
             $minion = $this->manager->getMinion($sender);
-
-            if(isset($args[0])) {
-                switch(strtolower($args[0])) {
+            if(isset($args[0])){
+                switch(strtolower($args[0])){
                     case "spawn":
-                        $this->manager->addMinion($sender, $sender->getPosition());
-                        $sender->sendMessage("Minion spawn edildi!");
+                        if($minion === null){
+                            $this->manager->addMinion($sender, $sender->getPosition());
+                            $sender->sendMessage("Minion spawn edildi!");
+                        } else {
+                            $sender->sendMessage("Zaten bir minionun var!");
+                        }
                         break;
                     case "upgrade":
                         if($minion !== null){
@@ -58,11 +60,27 @@ class Main extends PluginBase implements Listener {
             } else {
                 $sender->sendMessage("Kullanım: /minion spawn|upgrade|info");
             }
-
             return true;
         }
 
         return false;
+    }
+
+    // Yumurta ile spawn
+    public function onInteract(PlayerInteractEvent $event): void {
+        $player = $event->getPlayer();
+        $item = $event->getItem();
+
+        if($item->getTypeId() === VanillaItems::EGG()->getTypeId()){
+            if($this->manager->getMinion($player) === null){
+                $this->manager->addMinion($player, $player->getPosition());
+                $player->sendMessage("Minion spawn edildi!");
+                $item->pop(); // Yumurtayı azalt
+                $event->cancel();
+            } else {
+                $player->sendMessage("Zaten bir minionun var!");
+            }
+        }
     }
 
     public function getManager(): MinionManager {
