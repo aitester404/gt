@@ -7,3 +7,7 @@ commands:
   minion:
     description: Minion komutları
     usage: "/minion"
+    permission: minion.command
+permissions:
+  minion.command:
+    default: true
