@@ -14,10 +14,10 @@ class MinionEntity extends Human {
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null){
         parent::__construct($location, $nbt);
         $this->setSkin($skin);
-        $this->setScale(0.66); // 2/3 boyut
+        $this->setScale(0.66);
         $this->setNameTag("§bMinion");
         $this->setNameTagAlwaysVisible(true);
-        $this->setImmobile(true); // Kendi başına yürüyemez
+        $this->setImmobile(true);
     }
 
     protected function initEntity(CompoundTag $nbt): void {
@@ -27,7 +27,7 @@ class MinionEntity extends Human {
     public function onUpdate(int $currentTick): bool {
         $this->tickCount++;
         if($this->tickCount % 10 === 0){
-            $this->broadcastEntityEvent(Human::ARM_SWING); // Kazma animasyonu
+            $this->broadcastEntityEvent(Human::ARM_SWING);
         }
         return parent::onUpdate($currentTick);
     }
