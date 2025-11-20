@@ -3,7 +3,7 @@
 namespace CLADevs\Minion\tasks;
 
 use pocketmine\entity\Human;
-use pocketmine\entity\location\Location;
+use pocketmine\world\Position;
 use pocketmine\player\Skin;
 use pocketmine\nbt\tag\CompoundTag;
 
@@ -11,8 +11,8 @@ class MinionEntity extends Human {
 
     private int $tickCount = 0;
 
-    public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null){
-        parent::__construct($location, $nbt);
+    public function __construct(Position $pos, Skin $skin, ?CompoundTag $nbt = null){
+        parent::__construct($pos, $nbt);
         $this->setSkin($skin);
         $this->setScale(0.66);
         $this->setNameTag("§bMinion");
@@ -32,3 +32,4 @@ class MinionEntity extends Human {
         return parent::onUpdate($currentTick);
     }
 }
+
