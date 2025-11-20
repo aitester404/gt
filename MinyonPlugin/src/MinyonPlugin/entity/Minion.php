@@ -6,59 +6,55 @@ use pocketmine\entity\Human;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat;
+use pocketmine\math\Vector3;
+use pocketmine\item\Item;
 use pocketmine\entity\EntityDataHelper;
-use pocketmine\world\World;
-use pocketmine\event\player\PlayerInteractEntityEvent;
+use pocketmine\utils\TextFormat;
 use MinyonPlugin\task\MinionMineTask;
 
 class Minion extends Human {
 
-    /** Envanter → protected olmak zorunda */
-    protected array $inventory = [];
+    /** ✔ Human::$inventory ile çakışmaması için farklı isim */
+    protected array $storage = [];
 
-    public static function createBaseNBT($pos) : CompoundTag {
+    public static function createBaseNBT($pos): CompoundTag {
         return EntityDataHelper::createBaseNBT($pos);
     }
 
     protected function initEntity(CompoundTag $nbt): void {
         parent::initEntity($nbt);
 
-        // Boyu %66
         $this->setScale(0.66);
 
-        // Elinde Efficiency V Diamond Pickaxe
-        $pick = VanillaItems::DIAMOND_PICKAXE();
-        $this->getInventory()->setItemInHand($pick);
+        // El
+        $this->getInventory()->setItemInHand(VanillaItems::DIAMOND_PICKAXE());
 
-        // Kazma AI Görevi
+        // Görev
         $this->getServer()->getScheduler()->scheduleRepeatingTask(
             new MinionMineTask($this),
-            40 // 2 saniyede bir
+            40
         );
     }
 
-    /** Envantere item ekle */
     public function addItem(string $id, int $count = 1): void {
-        if(!isset($this->inventory[$id])){
-            $this->inventory[$id] = 0;
-        }
-        $this->inventory[$id] += $count;
+        if(!isset($this->storage[$id])) $this->storage[$id] = 0;
+        $this->storage[$id] += $count;
     }
 
-    /** Sağ tıklama */
-    public function onInteract(Player $player, Item $item, Vector3 $clickPos) : bool {
-        $player->sendMessage(TextFormat::AQUA . "---- Minyon Envanteri ----");
+    /** PM5 doğru imza */
+    public function onInteract(Player $player, Item $item, Vector3 $clickPos): bool {
+        $player->sendMessage("§b--- Minyon Envanteri ---");
 
-        if(empty($this->inventory)){
-            $player->sendMessage("§7Minyonun envanteri boş.");
+        if(empty($this->storage)){
+            $player->sendMessage("§7Envanter boş.");
             return true;
         }
 
-        foreach($this->inventory as $id => $count){
-            $player->sendMessage("§b$id §fx §e$count");
+        foreach($this->storage as $id => $count){
+            $player->sendMessage("§a$id §fx§e$count");
         }
 
         return true;
     }
 }
+
